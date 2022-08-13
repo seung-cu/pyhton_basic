@@ -89,15 +89,5 @@ for i, cat in enumerate(categorical_variable):
 
 # %%  Sample
 dir(anova_lm(model))
-# %%
-anova_lm(model).items()["p-Value"]
-# %%
-anova_lm(model)._get_value
-# %%
-anova_lm(model)["PR(>F)"].iloc[0]
-# %%
 
 
-# %%
-
-# %%
