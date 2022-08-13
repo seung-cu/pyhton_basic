@@ -50,7 +50,7 @@ train["weather"] = train["weather"].map({1: "Clear + Few clouds",\
 
 
 # %%
-categorical_variable = ["season", "holiday", "workingday", "weather", "year", "month", "day", "weekday"]
+categorical_variable = ["season", "holiday", "workingday", "weather", "year", "month", "day", "weekday" ,"hour"]
 numerical_variable = ["temp", "atemp", "humidity", "windspeed", "casual", "registered"]
 date_variable = ["datetime"]
 target_variable =["count"]
@@ -73,11 +73,34 @@ for i, cat in enumerate(categorical_variable):
     model = ols('count ~ C({})'.format(cat), temp).fit()
     p_value = anova_lm(model)["PR(>F)"][0]
     if p_value < 0.05:
-        print(cat ,": siginifcance -> all population are not equal")
+        print(cat ,": siginifcant -> all population are not equal")
         print("------------")
     else:
         print(cat, ":not-significant -> all population are equal")
         print("------------")
+
+# %%
+## holiday x weather
+holiday_weather = train.groupby(["holiday","weather"])["count"].mean().reset_index()
+sns.pointplot(x = "holiday", y= "count", hue = 'weather', data = holiday_weather, join =False)
+
+# %%
+## workingday x weather
+workingday_weather = train.groupby(["workingday","weather"])["count"].mean().reset_index()
+sns.pointplot(x = "workingday", y= "count", hue = 'weather', data = workingday_weather, join =False)
+
+# %%
+## holiday x hour
+
+holiday_hour = train.groupby(["holiday","hour"])["count"].mean().reset_index()
+sns.pointplot(x = "hour", y= "count", hue = 'holiday', data = holiday_hour, join =True)
+
+# %%
+## workingday x hour
+workingday_hour = train.groupby(["workingday","hour"])["count"].mean().reset_index()
+sns.pointplot(x = "hour", y= "count", hue = 'workingday', data = workingday_hour, join =True)
+
+# %%
 
    
 # %%
@@ -86,7 +109,7 @@ for i, cat in enumerate(categorical_variable):
 # %%
 ## Outlier analysis for Target variable
 
-
+train.columns
 # %%  Sample
 dir(anova_lm(model))
 
