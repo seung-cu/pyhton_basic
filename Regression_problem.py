@@ -51,8 +51,9 @@ train["weather"] = train["weather"].map({1: "Clear + Few clouds",\
 
 # %%
 categorical_variable = ["season", "holiday", "workingday", "weather", "year", "month", "day", "weekday" ,"hour"]
-numerical_variable = ["temp", "atemp", "humidity", "windspeed", "casual", "registered"]
+numerical_variable = ["temp", "atemp", "humidity", "windspeed"]
 date_variable = ["datetime"]
+semi_target_variable = ["casual", "registered"]
 target_variable =["count"]
 
 # %%
@@ -99,17 +100,35 @@ sns.pointplot(x = "hour", y= "count", hue = 'holiday', data = holiday_hour, join
 ## workingday x hour
 workingday_hour = train.groupby(["workingday","hour"])["count"].mean().reset_index()
 sns.pointplot(x = "hour", y= "count", hue = 'workingday', data = workingday_hour, join =True)
-
-# %%
-
    
 # %%
 ## Visualization of numerical variable vs Target variable(Distribution)
 
+corr_data = train[numerical_variable+ target_variable].corr()
+print(corr_data)
+sns.heatmap(corr_data, annot=True)
+
+
 # %%
 ## Outlier analysis for Target variable
 
-train.columns
+sns.distplot(train['count'], hist = True, color = 'blue')
+plt.show()
+
+# %% 
+sns.boxplot(y ='count', data= train)
+plt.show()
+
+Q1 = train["count"].quantile(0.25)
+Q3 = train["count"].quantile(0.75)
+IQR = Q3 - Q1
+Lower_Fence = Q1 - (1.5 * IQR)
+Upper_Fence = Q3 + (1.5 * IQR)
+
+print("num_of_outlier:", len(train.loc[train["count"]> Upper_Fence]))
+print("num_of_data:", len(train))
+
+
 # %%  Sample
 dir(anova_lm(model))
 
